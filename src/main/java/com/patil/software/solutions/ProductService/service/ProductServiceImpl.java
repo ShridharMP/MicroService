@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.patil.software.solutions.ProductService.entity.Product;
+import com.patil.software.solutions.ProductService.exception.ProductServiceCustomException;
 import com.patil.software.solutions.ProductService.model.ProductRequest;
 import com.patil.software.solutions.ProductService.model.ProductResponse;
 import com.patil.software.solutions.ProductService.repository.ProductServiceRepository;
@@ -34,8 +35,9 @@ public class ProductServiceImpl implements ProductService {
 	public ProductResponse getProductById(long productById) {
 		log.info("Getting product Details");
 		Product product = productServiceRepository.findById(productById)
-				.orElseThrow(() -> new RuntimeException("Product not found for given " + productById));
-		ProductResponse productResponse=new ProductResponse();
+				.orElseThrow(() -> new ProductServiceCustomException("Product not found for given id:" + productById,
+						"PRODUCT_NOT_FOUND"));
+		ProductResponse productResponse = new ProductResponse();
 		BeanUtils.copyProperties(product, productResponse);
 		log.info("Product Details");
 		return productResponse;
